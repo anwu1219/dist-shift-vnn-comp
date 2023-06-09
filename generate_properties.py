@@ -66,7 +66,7 @@ def main(args):
 
     if not os.path.isdir("./vnnlib"):
         os.mkdir("./vnnlib")
-    open('benchmarks.csv', 'w')
+    open('instances.csv', 'w')
 
     added_benchmarks = 0
     for index in indices:
@@ -107,7 +107,7 @@ def main(args):
                     f.write(f'(assert (>= X_{i + 784} {mu[i] - delta * std[i]}))\n')
                 f.write(f'(assert (>= Y_{secondLabel} Y_{topLabel}))\n')
 
-            with open('benchmarks.csv','a') as f:
+            with open('instances.csv','a') as f:
                 f.write(f'{concatN},{vnnlib_filename},{TIMEOUT}\n')
 
             added_benchmarks += 1

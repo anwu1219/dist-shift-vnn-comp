@@ -2,7 +2,7 @@ import onnxruntime
 import numpy as np
 import random
 import argparse
-from tensorflow import keras
+from torchvision import transforms, datasets
 import matplotlib.pyplot as plt
 import os
 
@@ -57,11 +57,11 @@ def main(args):
     showImg = args.show_img
 
     IMAGE_SIZE = (1,1,28,28)
-    (_, _), (mnist_test, y_test) = keras.datasets.mnist.load_data()
+    mnist_testset = datasets.MNIST(root='./data', train=False, download=True, transform=None)
 
     TIMEOUT = 300
     NUM_BENCHMARKS = 3600 * 6 / TIMEOUT
-    indices = list(range(len(y_test)))
+    indices = list(range(len(mnist_testset)))
     random.shuffle(indices)
 
     if not os.path.isdir("./vnnlib"):
@@ -73,8 +73,8 @@ def main(args):
         if added_benchmarks == NUM_BENCHMARKS:
             break
 
-        image = (mnist_test[index].reshape(IMAGE_SIZE) / 255).astype(np.float32)
-        label = y_test[index]
+        image = (np.array(mnist_testset[index][0]).reshape(IMAGE_SIZE) / 255).astype(np.float32)
+        label = mnist_testset[index][1]
         mu, std = getMuStd(priorN, image)
 
         if showImg:
